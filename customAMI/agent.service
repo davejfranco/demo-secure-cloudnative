@@ -1,0 +1,8 @@
+[Unit]
+Description=systemd unit ser.
+
+[Service]
+ExecStart=/bin/sh /opt/smith.sh
+
+[Install]
+WantedBy=multi-user.target
