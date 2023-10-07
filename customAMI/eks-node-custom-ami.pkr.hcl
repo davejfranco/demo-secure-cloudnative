@@ -23,7 +23,7 @@ variable "region" {
 
 variable "ami_name" {
   type    = string
-  default = "amazon-eks-node"
+  default = "amazon-ecs-custom-ami"
 }
 
 locals {
@@ -47,7 +47,7 @@ source "amazon-ebs" "eks-worker" {
   encrypt_boot = local.encrypt_boot
   source_ami_filter {
     filters = {
-      name                = "amazon-eks-node-${var.cluster_version}-v*"
+      name                = "amzn2-ami-ecs-hvm-2.0.20230912-x86_64-ebs"
       root-device-type    = "ebs"
       virtualization-type = "hvm"
     }
