@@ -43,7 +43,7 @@ jobs:
       
       - name: Packer init
         run: |
-          packer init eks-node-custom-ami.pkr.hcl
+          packer init ecs-node-custom-ami.pkr.hcl
         working-directory: customAMI/
 
       - name: Packer build
