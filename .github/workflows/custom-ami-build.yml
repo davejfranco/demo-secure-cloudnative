@@ -1,7 +1,7 @@
 # Github action workflow to deploy the infrastructure
 # this workflow is deploy manually from the github actions tab
 ---
-name: ECS Custom AMI Build with agent
+name: ECS Custom AMI
 on:
   workflow_dispatch:
     inputs:

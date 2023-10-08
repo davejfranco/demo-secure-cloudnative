@@ -15,10 +15,13 @@ on:
         description: 'ECR registry repo name'
         required: true
         default: 'n26-app'
-      docker_image:
-        description: 'Docker image name'
+      default:
+        description: 'wether to deploy the default image or not'
         required: true
-        default: 'nginx:alpine'
+        options:
+          - 'true'
+          - 'false'
+        default: 'true'
       region:
         description: 'Region to deploy'
         required: true
@@ -59,7 +62,8 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         working-directory: app/
 
-      - name: Deploy to ECS
+      - name: Deploy default image to ECS
+        if: github.event.inputs.default == 'true'
         run: |
           TASK_DEFINITION=$(aws ecs describe-task-definition --task-definition "$SERVICE_NAME" --region "$AWS_DEFAULT_REGION")
 
@@ -74,4 +78,23 @@ jobs:
           AWS_DEFAULT_REGION: ${{ github.event.inputs.region }}
           CLUSTER_NAME: ${{ github.event.inputs.cluster-name }}
           SERVICE_NAME: ${{ github.event.inputs.service-name }}
-          FULL_IMAGE:  ${{ steps.login-ecr.outputs.docker_image }}#${{ steps.login-ecr.outputs.registry }}/${{ env.APP_REPO }}:${{ github.sha }}
+          FULL_IMAGE:  nginx:alpine-slim 
+      
+      - name: Deploy to ECS
+        if: github.event.inputs.default == 'false'
+        run: |
+          TASK_DEFINITION=$(aws ecs describe-task-definition --task-definition "$SERVICE_NAME" --region "$AWS_DEFAULT_REGION")
+
+          NEW_TASK_DEFINITION=$(echo $TASK_DEFINITION | jq --arg IMAGE "$FULL_IMAGE" '.taskDefinition | .containerDefinitions[0].image = $IMAGE | del(.taskDefinitionArn) | del(.revision) | del(.status) | del(.requiresAttributes) | del(.compatibilities) |  del(.registeredAt)  | del(.registeredBy)')
+
+          NEW_TASK_INFO=$(aws ecs register-task-definition --region "$AWS_DEFAULT_REGION" --cli-input-json "$NEW_TASK_DEFINITION")
+
+          NEW_REVISION=$(echo $NEW_TASK_INFO | jq '.taskDefinition.revision')
+
+          aws ecs update-service --cluster ${CLUSTER_NAME} --service ${SERVICE_NAME} --task-definition ${TASK_FAMILY}:${NEW_REVISION}
+        env:
+          AWS_DEFAULT_REGION: ${{ github.event.inputs.region }}
+          CLUSTER_NAME: ${{ github.event.inputs.cluster-name }}
+          SERVICE_NAME: ${{ github.event.inputs.service-name }}
+          FULL_IMAGE:  ${{ steps.login-ecr.outputs.registry }}/${{ env.APP_REPO }}:${{ github.sha }}
+

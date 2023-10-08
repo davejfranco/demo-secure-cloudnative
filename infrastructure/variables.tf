@@ -1,3 +1,9 @@
+variable "github_repo" {
+  type = string
+  description = "Github repo"
+  default = "davejfranco/demo-secure-cloudnative"
+}
+
 variable "tags" {
   type        = map(string)
   description = "Infrastructure tags"

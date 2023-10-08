@@ -25,8 +25,8 @@ data "aws_iam_policy_document" "gh_trust_policy" {
       test = "StringLike"
       values = [
         #This ensures that GHA can only be used to push to the ECR repo in master and tags (releases)
-        "repo:davejfranco/demo-secure-cloudnative:ref:refs/tags/*",
-        "repo:davejfranco/demo-secure-cloudnative:ref:refs/heads/main",
+        "repo:${var.github_repo}:ref:refs/tags/*", #Adjust this to the account
+        "repo:${var.github_repo}:ref:refs/heads/main",
       ]
       variable = "${replace(data.aws_iam_openid_connect_provider.github.url, "https://", "")}:sub"
     }

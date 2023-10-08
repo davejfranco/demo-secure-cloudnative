@@ -41,20 +41,20 @@ jobs:
         run: terraform init
         working-directory: infrastructure/
 
-      - name: Terraform plan
-        run: |
-          terraform plan \
-            -var "name=${{ github.event.inputs.stack-name }}" \
-            -var "region=${{ github.event.inputs.region }}" \
-            -var "dr_region=${{ github.event.inputs.dr-region }}" \
-            -out "planfile"
-        working-directory: infrastructure/
-      # - name: Terraform apply
+      # - name: Terraform plan
       #   run: |
-      #     terraform apply -auto-approve \
+      #     terraform plan \
       #       -var "name=${{ github.event.inputs.stack-name }}" \
       #       -var "region=${{ github.event.inputs.region }}" \
       #       -var "dr_region=${{ github.event.inputs.dr-region }}" \
-
+      #       -out "planfile"
       #   working-directory: infrastructure/
+      
+      - name: Terraform apply
+        run: |
+          terraform apply -auto-approve \
+            -var "name=${{ github.event.inputs.stack-name }}" \
+            -var "region=${{ github.event.inputs.region }}" \
+            -var "dr_region=${{ github.event.inputs.dr-region }}" \
+        working-directory: infrastructure/
 
