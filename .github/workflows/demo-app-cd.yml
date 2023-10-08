@@ -9,6 +9,10 @@ on:
         description: 'ECR registry repo name'
         required: true
         default: 'n26-app'
+      region:
+        description: 'Region to deploy'
+        required: true
+        default: 'us-east-1'
 
 permissions:
   id-token: write
