@@ -3,15 +3,6 @@ module "ecs_cluster" {
 
   cluster_name = local.cluster_name
 
-  # cluster_configuration = {
-  #   execute_command_configuration = {
-  #     logging = "OVERRIDE"
-  #     log_configuration = {
-  #       cloud_watch_log_group_name = "/aws/ecs/${var.name}-ecs"
-  #     }
-  #   }
-
-  # }
 
   # Capacity provider - autoscaling groups
   default_capacity_provider_use_fargate = false
@@ -112,13 +103,7 @@ module "ecs_service" {
       description              = "Service port"
       source_security_group_id = module.alb.security_group_id
     }
-    # egress_all = {
-    #   type        = "egress"
-    #   from_port   = 0
-    #   to_port     = 0
-    #   protocol    = "-1"
-    #   cidr_blocks = ["0.0.0.0/0"]
-    # }
+
   }
 
   tags = var.tags
@@ -181,17 +166,6 @@ module "autoscaling" {
         }
       }
     }
-    # request-count-per-target = {
-    #   policy_type               = "TargetTrackingScaling"
-    #   estimated_instance_warmup = 120
-    #   target_tracking_configuration = {
-    #     predefined_metric_specification = {
-    #       predefined_metric_type = "ALBRequestCountPerTarget"
-    #       resource_label         = "${module.alb.lb_arn_suffix}/${module.alb.target_group_arn_suffixes[0]}"
-    #     }
-    #     target_value = 800
-    #   }
-    # }
   }
   user_data = base64encode(local.user_data)
 

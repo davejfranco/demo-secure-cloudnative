@@ -9,8 +9,7 @@ resource "random_string" "random" {
 }
 
 resource "aws_secretsmanager_secret" "this" {
-  name = "${var.name}1"
-  #kms_key_id = module.secrets_manager_kms.key_id
+  name = var.name
 }
 
 resource "aws_secretsmanager_secret_version" "this" {

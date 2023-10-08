@@ -12,8 +12,6 @@ app = FastAPI()
 
 # Connect to AWS Secret Manager
 client = boto3.client('secretsmanager', region_name=REGION)
-#session = boto3.Session(region_name=REGION)
-#client = session.client('secretsmanager')
 
 # Retrieve database credentials from Secret Manager
 try:

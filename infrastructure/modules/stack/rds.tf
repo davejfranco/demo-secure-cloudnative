@@ -30,7 +30,7 @@ resource "aws_db_instance" "main_db" {
 
   instance_class      = var.db_instance_class
   skip_final_snapshot = true
-  deletion_protection = true
+  deletion_protection = var.deletion_protection
 
   # Engine configuration
   engine         = "mysql"
@@ -48,7 +48,7 @@ resource "aws_db_instance" "main_db" {
 
   # Encryption
   storage_encrypted = true
-  #kms_key_id        = module.prod_rds_primary.key_arn
+  kms_key_id        = module.db_main_key.key_arn
 
   # Network
   db_subnet_group_name   = aws_db_subnet_group.main_db.name
@@ -56,9 +56,9 @@ resource "aws_db_instance" "main_db" {
   publicly_accessible    = local.db.publicly_accessible
 
   #   # Monitoring
-  monitoring_interval          = local.db.monitoring_interval
-  performance_insights_enabled = local.db.pi
-  #performance_insights_kms_key_id = module.prod_rds_performance_insights.key_arn
+  monitoring_interval             = local.db.monitoring_interval
+  performance_insights_enabled    = local.db.pi
+  performance_insights_kms_key_id = module.rds_performance_insights.key_arn
 
   maintenance_window = "Sun:01:00-Sun:02:30"
 

@@ -2,6 +2,8 @@ data "aws_caller_identity" "current" {}
 
 data "aws_availability_zones" "available" {}
 
+data "aws_region" "current" {}
+
 # data "aws_ami" "eks_default" {
 #   most_recent = true
 #   owners      = ["amazon"]

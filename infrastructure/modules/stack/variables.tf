@@ -104,36 +104,6 @@ variable "ecs_ami_id" {
   default     = ""
 }
 
-# variable "node_group_min_size" {
-#   type        = number
-#   description = "Minimum size of the node group"
-#   default     = 1
-# }
-
-# variable "node_group_max_size" {
-#   type        = number
-#   description = "Maximum size of the node group"
-#   default     = 2
-# }
-
-# variable "node_group_desired_size" {
-#   type        = number
-#   description = "Desired size of the node group"
-#   default     = 1
-# }
-
-# variable "node_group_instance_types" {
-#   type        = list(string)
-#   description = "list of instance type allowed in nodegroup"
-#   default     = ["t3a.medium"] #AMD
-# }
-
-# variable "node_group_volume_size" {
-#   type        = number
-#   description = "Size of the node group volume"
-#   default     = 30
-# }
-
 variable "create_key_pair" {
   type        = bool
   description = "Create a key pair for SSH access"
@@ -163,4 +133,85 @@ variable "db_instance_class" {
   type        = string
   description = "Instance class for the database"
   default     = "db.t3.micro"
+}
+
+variable "deletion_protection" {
+  type        = bool
+  description = "Enable deletion protection for the database"
+  default     = false
+}
+
+
+#Monitoring settings
+
+variable "cpu_utilization_high_threshold" {
+  type        = number
+  description = "CPU utilization high threshold"
+  default     = 80
+}
+
+variable "cpu_utilization_high_evaluation_periods" {
+  type        = number
+  description = "CPU utilization high evaluation periods"
+  default     = 5
+}
+
+variable "cpu_utilization_high_period" {
+  type        = number
+  description = "CPU utilization high period"
+  default     = 60
+}
+
+variable "cpu_utilization_low_threshold" {
+  type        = number
+  description = "CPU utilization low threshold"
+  default     = 20
+}
+
+variable "cpu_utilization_low_evaluation_periods" {
+  type        = number
+  description = "CPU utilization low evaluation periods"
+  default     = 5
+}
+
+variable "cpu_utilization_low_period" {
+  type        = number
+  description = "CPU utilization low period"
+  default     = 60
+}
+
+variable "memory_utilization_high_threshold" {
+  type        = number
+  description = "Memory utilization high threshold"
+  default     = 80
+}
+
+variable "memory_utilization_high_evaluation_periods" {
+  type        = number
+  description = "Memory utilization high evaluation periods"
+  default     = 5
+}
+
+variable "memory_utilization_high_period" {
+  type        = number
+  description = "Memory utilization high period"
+  default     = 60
+}
+
+variable "memory_utilization_low_threshold" {
+  type        = number
+  description = "Memory utilization low threshold"
+  default     = 20
+}
+
+variable "memory_utilization_low_evaluation_periods" {
+  type        = number
+  description = "Memory utilization low evaluation periods"
+  default     = 5
+}
+
+variable "memory_utilization_low_period" {
+  type        = number
+  description = "Memory utilization low period"
+  default     = 60
 }

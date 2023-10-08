@@ -1,7 +1,8 @@
 module "demo" {
   source = "./modules/stack"
 
-  name      = var.name
+  name = var.name
+
   region    = "us-east-1"
   dr_region = "us-east-2"
 
@@ -30,17 +31,5 @@ module "demo" {
 
   #ECS config
   ecs_ami_id = data.aws_ami.ecs_custom.image_id
-
-  #EKS config
-  # cluster_version                 = "1.27"
-  # cluster_endpoint_public_access  = true
-  # cluster_endpoint_private_access = true
-
-  # node_group_ami_id         = data.aws_ami.eks_custom.image_id
-  # node_group_min_size       = 1
-  # node_group_max_size       = 2
-  # node_group_desired_size   = 1
-  # node_group_instance_types = ["t3.medium"]
-  # node_group_volume_size    = 30
 
 }
