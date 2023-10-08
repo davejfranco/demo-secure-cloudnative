@@ -150,6 +150,7 @@ data "aws_iam_policy_document" "ecs_access_policy" {
     sid    = "ecsTaskDef"
     effect = "Allow"
     actions = [
+      "ecs:DescribeTaskDefinition",
       "ecs:RegisterTaskDefinition"
     ]
     resources = ["*"]
@@ -162,6 +163,17 @@ data "aws_iam_policy_document" "ecs_access_policy" {
       "ecs:DescribeServices"
     ]
     resources = [module.demo.ecs_service_arn]
+  }
+  statement {
+    sid    = "PassRolesInTaskDefinition"
+    effect = "Allow"
+    actions = [
+      "iam:PassRole"
+    ]
+    resources = [
+      module.demo.ecs_service_task_role_arn,
+      module.demo.ecs_service_task_exec_role_arn
+    ]
   }
 }
 

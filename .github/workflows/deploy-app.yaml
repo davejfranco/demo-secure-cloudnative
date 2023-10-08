@@ -68,7 +68,7 @@ jobs:
 
           NEW_REVISION=$(echo $NEW_TASK_INFO | jq '.taskDefinition.revision')
 
-          aws ecs update-service --cluster ${ECS_CLUSTER} --service ${SERVICE_NAME} --task-definition ${TASK_FAMILY}:${NEW_REVISION}
+          aws ecs update-service --cluster ${CLUSTER_NAME} --service ${SERVICE_NAME} --task-definition ${TASK_FAMILY}:${NEW_REVISION}
         env:
           AWS_DEFAULT_REGION: ${{ github.event.inputs.region }}
           CLUSTER_NAME: ${{ github.event.inputs.cluster-name }}
