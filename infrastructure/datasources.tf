@@ -13,6 +13,7 @@ data "aws_ami" "ecs_default" {
   }
 }
 
+#If you bake your own AMI, you can use this data source to find it
 data "aws_ami" "ecs_custom" {
   most_recent = true
   owners      = [data.aws_caller_identity.current.account_id]

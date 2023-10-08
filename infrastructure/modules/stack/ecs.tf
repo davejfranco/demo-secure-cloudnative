@@ -84,7 +84,6 @@ module "ecs_service" {
     }
   }
 
-
   load_balancer = {
     service = {
       target_group_arn = element(module.alb.target_group_arns, 0)

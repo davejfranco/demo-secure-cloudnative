@@ -17,9 +17,9 @@ locals {
     name                    = "${var.name}-db"
     username                = var.db_username
     password                = random_password.this.result
-    multi_az                = false 
-    pi                      = false
-    publicly_accessible     = true
+    multi_az                = true 
+    pi                      = true
+    publicly_accessible     = false
     backup_retention_period = 0
     monitoring_interval     = 0
   }
