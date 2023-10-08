@@ -30,6 +30,6 @@ module "demo" {
   single_nat_gateway = true #We need redundancy NAT for production
 
   #ECS config
-  ecs_ami_id = data.aws_ami.ecs_custom.image_id 
+  ecs_ami_id = data.aws_ami.ecs_custom.image_id
 
 }

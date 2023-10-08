@@ -143,3 +143,72 @@ resource "aws_iam_role_policy_attachment" "packer_access_policy" {
   role       = aws_iam_role.github_manager.name
   policy_arn = aws_iam_policy.packer_access_policy.arn
 }
+
+#ECS update service access
+data "aws_iam_policy_document" "ecs_access_policy" {
+  statement {
+    sid    = "ecsTaskDef"
+    effect = "Allow"
+    actions = [
+      "ecs:RegisterTaskDefinition"
+    ]
+    resources = ["*"]
+  }
+  statement {
+    sid    = "UpdateService"
+    effect = "Allow"
+    actions = [
+      "ecs:UpdateService",
+      "ecs:DescribeServices"
+    ]
+    resources = [module.demo.ecs_service_arn]
+  }
+}
+
+resource "aws_iam_policy" "ecs_access_policy" {
+  name   = "ecs-access-policy"
+  policy = data.aws_iam_policy_document.ecs_access_policy.json
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_access_policy" {
+  role       = aws_iam_role.github_manager.name
+  policy_arn = aws_iam_policy.ecs_access_policy.arn
+}
+
+/*
+{
+   "Version":"2012-10-17",
+   "Statement":[
+      {
+         "Sid":"RegisterTaskDefinition",
+         "Effect":"Allow",
+         "Action":[
+            "ecs:RegisterTaskDefinition"
+         ],
+         "Resource":"*"
+      },
+      {
+         "Sid":"PassRolesInTaskDefinition",
+         "Effect":"Allow",
+         "Action":[
+            "iam:PassRole"
+         ],
+         "Resource":[
+            "arn:aws:iam::<aws_account_id>:role/<task_definition_task_role_name>",
+            "arn:aws:iam::<aws_account_id>:role/<task_definition_task_execution_role_name>"
+         ]
+      },
+      {
+         "Sid":"DeployService",
+         "Effect":"Allow",
+         "Action":[
+            "ecs:UpdateService",
+            "ecs:DescribeServices"
+         ],
+         "Resource":[
+            "arn:aws:ecs:<region>:<aws_account_id>:service/<cluster_name>/<service_name>"
+         ]
+      }
+   ]
+}
+*/

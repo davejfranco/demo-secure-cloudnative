@@ -5,3 +5,11 @@ output "ssh_private_key" {
 output "db_instance_arn" {
   value = aws_db_instance.main_db.arn
 }
+
+output "ecs_service_arn" {
+  value = module.ecs_service.id
+}
+
+output "ecs_service_name" {
+  value = module.ecs_service.name
+}

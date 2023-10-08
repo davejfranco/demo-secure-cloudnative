@@ -22,7 +22,7 @@ permissions:
   contents: read
 
 jobs:
-  deploy:
+  bake:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

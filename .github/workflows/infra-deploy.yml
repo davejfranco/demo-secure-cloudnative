@@ -18,7 +18,7 @@ on:
         required: true
         default: 'us-east-2'
 jobs:
-  deploy:
+  setup:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

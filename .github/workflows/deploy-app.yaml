@@ -5,6 +5,15 @@ name: App Deploy
 on:
   workflow_dispatch:
     inputs:
+      cluster-name:
+        description: 'Name of the cluster'
+        required: true
+      service-name:
+        description: 'Name of the service'
+        required: true
+      task-family:
+        description: 'Name of the task family'
+        required: true
       app-repo:
         description: 'ECR registry repo name'
         required: true
@@ -48,3 +57,21 @@ jobs:
           REPOSITORY: ${{ env.APP_REPO }}
           IMAGE_TAG: ${{ github.sha }}
         working-directory: app/
+
+      - name: Deploy to ECS
+        run: |
+          TASK_DEFINITION=$(aws ecs describe-task-definition --task-definition "$TASK_FAMILY" --region "$AWS_DEFAULT_REGION")
+
+          NEW_TASK_DEFINITION=$(echo $TASK_DEFINITION | jq --arg IMAGE "$FULL_IMAGE" '.taskDefinition | .containerDefinitions[0].image = $IMAGE | del(.taskDefinitionArn) | del(.revision) | del(.status) | del(.requiresAttributes) | del(.compatibilities) |  del(.registeredAt)  | del(.registeredBy)')
+
+          NEW_TASK_INFO=$(aws ecs register-task-definition --region "$AWS_DEFAULT_REGION" --cli-input-json "$NEW_TASK_DEFINITION")
+
+          NEW_REVISION=$(echo $NEW_TASK_INFO | jq '.taskDefinition.revision')
+
+          aws ecs update-service --cluster ${ECS_CLUSTER} --service ${SERVICE_NAME} --task-definition ${TASK_FAMILY}:${NEW_REVISION}
+        env:
+          AWS_DEFAULT_REGION: ${{ github.event.inputs.region }}
+          CLUSTER_NAME: ${{ github.event.inputs.cluster-name }}
+          SERVICE_NAME: ${{ github.event.inputs.service-name }}
+          TASK_FAMILY: ${{ github.event.inputs.task-family }}
+          FULL_IMAGE: ${{ steps.login-ecr.outputs.registry }}/${{ env.APP_REPO }}:${{ github.sha }}
