@@ -39,7 +39,7 @@ jobs:
       
       - name: Terraform Init
         run: terraform init
-        working-directory: infrastrucutre/
+        working-directory: infrastructure/
 
       - name: Terraform plan
         run: |
@@ -48,7 +48,6 @@ jobs:
             -var "region=${{ github.event.inputs.region }}" \
             -var "dr_region=${{ github.event.inputs.dr-region }}" \
             -out "planfile"
-
         working-directory: infrastructure/
       # - name: Terraform apply
       #   run: |
