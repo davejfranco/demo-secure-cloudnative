@@ -16,12 +16,10 @@ on:
         required: true
         default: 'n26-app'
       default:
+        type: boolean
         description: 'wether to deploy the default image or not'
         required: true
-        options:
-          - 'true'
-          - 'false'
-        default: 'true'
+        default: true
       region:
         description: 'Region to deploy'
         required: true
@@ -63,7 +61,7 @@ jobs:
         working-directory: app/
 
       - name: Deploy default image to ECS
-        if: github.event.inputs.default == 'true'
+        if: ${{ github.event.inputs.default == 'true' }}
         run: |
           TASK_DEFINITION=$(aws ecs describe-task-definition --task-definition "$SERVICE_NAME" --region "$AWS_DEFAULT_REGION")
 
@@ -81,7 +79,7 @@ jobs:
           FULL_IMAGE:  nginx:alpine-slim 
       
       - name: Deploy to ECS
-        if: github.event.inputs.default == 'false'
+        if: ${{ github.event.inputs.default == 'false' }}
         run: |
           TASK_DEFINITION=$(aws ecs describe-task-definition --task-definition "$SERVICE_NAME" --region "$AWS_DEFAULT_REGION")
 
