@@ -43,5 +43,8 @@ If you want to test baking a new AMI with the agent installed run the workflow `
 
 Once the infrastructure is deployed we can deploy the app. 
 
-This workflow will build a sample app docker image, push it to ECR and deploy it in the ECS cluster. if the variable `default` is set to `true` the ecs service will get updated with a `nginx:alpine-slim` image. If the variable `default` is set to `false` the ecs service will get updated with the image built in the workflow (This is because I didn't have time to finish the app).
+This workflow will build a sample app docker image, push it to ECR and deploy it in the ECS cluster. if the variable `deploy` is set to `demo` the ecs service will get updated with a `nginx:alpine-slim` image. If the variable `deploy` is set to `apo` the ecs service will get updated with the image built in the workflow (This is because I didn't have time to finish the app). You will also need to provide the cluster name and the service name.
+
+![workflow](./img/app-deploy.png)
+
 

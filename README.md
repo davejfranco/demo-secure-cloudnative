@@ -49,6 +49,8 @@ This infrastructure is composed of the following components:
 
     - [Backup](./infrastructure/backup.tf)
 
+- To deploy the infrastructure and test custom AMI we use Github Action because the proyect itself is hosted on Github and this makes GHA the easiest way. The code can be found here: [Github Action](./.github/workflows)
+
 
 ## Custom Agent for ECS
 
@@ -56,4 +58,6 @@ When it comes to install a security agent in a ECS cluster which is a dynamic en
 
 - Bake the agent in a new AMI and use it in the ECS cluster. This is the approach used in this demo. The code uses Packer to build a new AMI with the agent installed. The agent is a dummy script that can be run as a service with systemd. To install it, you can update the terraform code so that the ECS cluster updates the launch configuration to use the new AMI. The code can be found here: [Custom AMI](./customAMI)
 
-- Deploy the agent as a container in the ECS task definition. There agent section has a Dockerfile that can be used to build the image and deploy it in the ECS task definition. The code can be found here: [Agent](./agent)
+- Deploy the agent as a container in the ECS task definition. There agent section has a Dockerfile that can be used to build the image and deploy it in the ECS task definition. The code can be found here: [Agent](./agent). Another way would be to use AWS SSM to install the agent in the ECS instances. 
+
+The instruction to test this repo [here](INSTRUCTIONS.md)
