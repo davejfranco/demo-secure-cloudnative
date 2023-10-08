@@ -33,7 +33,7 @@ This infrastructure is composed of the following components:
     - [Cloudwatch](./infrastructure/modules/stack/cloudwatch.tf)
     - [RDS Performance Insights](./infrastructure/modules/stack/rds.tf)
 
-- KMS is used as mentioned to encrypt RDS 
+- KMS is the service that allow us to encrypt and decrypt RDS storage, secrets. In this project we use customer managed key but also we can use the default key provided by AWS. 
   
     KMS section is also part of the stack module.
   
@@ -56,8 +56,16 @@ This infrastructure is composed of the following components:
 
 When it comes to install a security agent in a ECS cluster which is a dynamic environment, we have two options:
 
-- Bake the agent in a new AMI and use it in the ECS cluster. This is the approach used in this demo. The code uses Packer to build a new AMI with the agent installed. The agent is a dummy script that can be run as a service with systemd. To install it, you can update the terraform code so that the ECS cluster updates the launch configuration to use the new AMI. The code can be found here: [Custom AMI](./customAMI)
+- Bake the agent in a new AMI and use it in the ECS cluster. This is the approach used in this demo. The code uses `Packer` to build a new AMI with the agent installed. The agent is a dummy script that can be run as a service with systemd. You can update the terraform code so that the ECS cluster updates the launch configuration to use the new AMI. The code of the agent can be found here: [Custom AMI](./customAMI)
 
-- Deploy the agent as a container in the ECS task definition. There agent section has a Dockerfile that can be used to build the image and deploy it in the ECS task definition. The code can be found here: [Agent](./agent). Another way would be to use AWS SSM to install the agent in the ECS instances. 
+Also in the `main.tf` file at the end you can use the custom AMI by changing the `ecs_ami_id` variable.
 
-The instruction to test this repo [here](INSTRUCTIONS.md)
+```bash	
+  #main.tf file
+  #ECS config
+  ecs_ami_id = data.aws_ami.ecs_default.image_id #change this if you need a custom ami id
+```
+
+- And the second option is to deploy the agent as a container in the ECS task definition. There is a Dockerfile that can be used to build the image of the agent and then it can be deployed as a second container in the ECS task definition. The code can be found here: [Agent](./agent). Another way would be to use AWS SSM to install the agent in the ECS instances. 
+
+The instruction to test this repo can be found [here](INSTRUCTIONS.md)
