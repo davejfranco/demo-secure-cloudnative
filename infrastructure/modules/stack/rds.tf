@@ -26,6 +26,7 @@ resource "aws_db_instance" "main_db" {
   #count = 0
   # Instance config
   identifier = "${var.name}-prod-master"
+  multi_az   = local.db.multi_az
 
   instance_class      = var.db_instance_class
   skip_final_snapshot = true
@@ -42,8 +43,8 @@ resource "aws_db_instance" "main_db" {
 
   # MySQL config
   parameter_group_name = aws_db_parameter_group.main_db.id
-  username             = "admin"
-  password             = random_password.this.result
+  username             = local.db.username
+  password             = local.db.password
 
   # Encryption
   storage_encrypted = true
@@ -52,10 +53,11 @@ resource "aws_db_instance" "main_db" {
   # Network
   db_subnet_group_name   = aws_db_subnet_group.main_db.name
   vpc_security_group_ids = [aws_security_group.main_db.id]
+  publicly_accessible    = local.db.publicly_accessible
 
   #   # Monitoring
-  monitoring_interval          = 60
-  performance_insights_enabled = true
+  monitoring_interval          = local.db.monitoring_interval
+  performance_insights_enabled = local.db.pi
   #performance_insights_kms_key_id = module.prod_rds_performance_insights.key_arn
 
   maintenance_window = "Sun:01:00-Sun:02:30"
@@ -81,7 +83,7 @@ resource "aws_db_instance" "main_db" {
 resource "aws_db_subnet_group" "main_db" {
   name        = "${var.name}-production-private"
   description = "Private Subnets"
-  subnet_ids  = module.vpc.private_subnets
+  subnet_ids  = module.vpc.public_subnets #module.vpc.private_subnets
 }
 
 resource "aws_security_group" "main_db" {
@@ -95,6 +97,14 @@ resource "aws_security_group" "main_db" {
     to_port     = 3306
     protocol    = "TCP"
     cidr_blocks = module.vpc.private_subnets_cidr_blocks
+  }
+
+  ingress {
+    description = "Inbound Public VPC" #Please delete
+    from_port   = 3306
+    to_port     = 3306
+    protocol    = "TCP"
+    cidr_blocks = module.vpc.public_subnets_cidr_blocks
   }
 
   egress {

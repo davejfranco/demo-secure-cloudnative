@@ -20,13 +20,13 @@ variable "tags" {
   }
 }
 
-variable "aws_region" {
+variable "region" {
   type        = string
   description = "AWS region"
   default     = "eu-central-1"
 }
 
-variable "dr_aws_region" {
+variable "dr_region" {
   type        = string
   description = "Disaster Recovery  region"
   default     = "eu-west-1"
@@ -68,6 +68,12 @@ variable "single_nat_gateway" {
   default     = true
 }
 
+variable "admin_ips" {
+  type        = list(string)
+  description = "List of IPs to allow SSH access"
+  default     = ["0.0.0.0/0"]
+}
+
 variable "cluster_version" {
   type        = string
   description = "EKS cluster version"
@@ -92,38 +98,69 @@ variable "node_group_name" {
   default     = "ng-demo"
 }
 
-variable "node_group_min_size" {
-  type        = number
-  description = "Minimum size of the node group"
-  default     = 1
-}
-
-variable "node_group_max_size" {
-  type        = number
-  description = "Maximum size of the node group"
-  default     = 2
-}
-
-variable "node_group_desired_size" {
-  type        = number
-  description = "Desired size of the node group"
-  default     = 1
-}
-
-variable "node_group_instance_types" {
-  type        = list(string)
-  description = "list of instance type allowed in nodegroup"
-  default     = ["t3a.medium"] #AMD
-}
-
-variable "node_group_volume_size" {
-  type        = number
-  description = "Size of the node group volume"
-  default     = 30
-}
-
-variable "namespace" {
+variable "ecs_ami_id" {
   type        = string
-  description = "Namespace for application"
+  description = "AMI ID for the node group"
+  default     = ""
+}
+
+# variable "node_group_min_size" {
+#   type        = number
+#   description = "Minimum size of the node group"
+#   default     = 1
+# }
+
+# variable "node_group_max_size" {
+#   type        = number
+#   description = "Maximum size of the node group"
+#   default     = 2
+# }
+
+# variable "node_group_desired_size" {
+#   type        = number
+#   description = "Desired size of the node group"
+#   default     = 1
+# }
+
+# variable "node_group_instance_types" {
+#   type        = list(string)
+#   description = "list of instance type allowed in nodegroup"
+#   default     = ["t3a.medium"] #AMD
+# }
+
+# variable "node_group_volume_size" {
+#   type        = number
+#   description = "Size of the node group volume"
+#   default     = 30
+# }
+
+variable "create_key_pair" {
+  type        = bool
+  description = "Create a key pair for SSH access"
+  default     = true
+}
+
+#Database
+variable "db_name" {
+  type        = string
+  description = "Name of the database"
   default     = "demo"
+}
+
+variable "db_username" {
+  type        = string
+  description = "Username for the database"
+  default     = "demouser"
+}
+
+variable "db_version" {
+  type        = number
+  description = "Version of the database"
+  default     = 8.0
+}
+
+variable "db_instance_class" {
+  type        = string
+  description = "Instance class for the database"
+  default     = "db.t3.micro"
 }
