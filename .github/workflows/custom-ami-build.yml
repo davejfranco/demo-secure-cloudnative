@@ -50,6 +50,5 @@ jobs:
         run: |
           packer build \
             -var "ami_name=${{ github.event.inputs.ami-name }}" \
-            -var "subnet_id=${{ github.event.inputs.subnet-id }}" \  
-            ecs-node-custom-ami.pkr.hcl
+            -var "subnet_id=${{ github.event.inputs.subnet-id }}" ecs-node-custom-ami.pkr.hcl
         working-directory: customAMI/
