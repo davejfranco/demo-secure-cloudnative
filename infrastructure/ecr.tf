@@ -5,8 +5,13 @@ resource "aws_ecr_repository" "app" {
   image_tag_mutability = "MUTABLE"
 
   image_scanning_configuration {
-    scan_on_push = false #this is a demo, so we don't need to scan
+    scan_on_push = true
   }
+}
+
+resource "aws_ecr_repository_policy" "app" {
+  repository = aws_ecr_repository.app.name
+  policy     = data.aws_iam_policy_document.ecr_access_policy.json
 }
 
 #Repo for the demo agent
@@ -15,6 +20,11 @@ resource "aws_ecr_repository" "agent" {
   image_tag_mutability = "MUTABLE"
 
   image_scanning_configuration {
-    scan_on_push = false #this is a demo, so we don't need to scan
+    scan_on_push = true
   }
+}
+
+resource "aws_ecr_repository_policy" "agent" {
+  repository = aws_ecr_repository.agent.name
+  policy     = data.aws_iam_policy_document.ecr_access_policy.json
 }

@@ -3,8 +3,8 @@ module "demo" {
 
   name = var.name
 
-  region    = "us-east-1"
-  dr_region = "us-east-2"
+  region    = var.region
+  dr_region = var.dr_region
 
   #Network config
   vpc_cidr = "172.16.0.0/16"
@@ -30,6 +30,6 @@ module "demo" {
   single_nat_gateway = true #We need redundancy NAT for production
 
   #ECS config
-  ecs_ami_id = data.aws_ami.ecs_custom.image_id
+  ecs_ami_id = data.aws_ami.ecs_custom.image_id 
 
 }

@@ -58,7 +58,7 @@ resource "aws_db_instance" "main_db" {
   #   # Monitoring
   monitoring_interval             = local.db.monitoring_interval
   performance_insights_enabled    = local.db.pi
-  performance_insights_kms_key_id = module.rds_performance_insights.key_arn
+  #performance_insights_kms_key_id = module.rds_performance_insights.key_arn
 
   maintenance_window = "Sun:01:00-Sun:02:30"
 

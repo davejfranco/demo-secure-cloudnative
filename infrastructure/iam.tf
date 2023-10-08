@@ -60,3 +60,86 @@ resource "aws_iam_role_policy_attachment" "github_manager_ecr_auth_token" {
   role       = aws_iam_role.github_manager.name
   policy_arn = aws_iam_policy.ecr_auth_token.arn
 }
+
+#ECR access policy
+data "aws_iam_policy_document" "ecr_access_policy" {
+  statement {
+    sid    = "ReadWrite"
+    effect = "Allow"
+    actions = [
+      "ecr:GetRepositoryPolicy",
+      "ecr:DescribeImages",
+      "ecr:DescribeRepositories",
+      "ecr:BatchGetImage",
+      "ecr:BatchCheckLayerAvailability",
+      "ecr:CompleteLayerUpload",
+      "ecr:GetDownloadUrlForLayer",
+      "ecr:InitiateLayerUpload",
+      "ecr:PutImage",
+      "ecr:UploadLayerPart",
+      "ecr:ListImages",
+      "ecr:ListTagsForResource"
+    ]
+    principals {
+      type = "AWS"
+      identifiers = [
+        aws_iam_role.github_manager.arn,
+      ]
+    }
+  }
+}
+
+#Packer access policy
+#https://developer.hashicorp.com/packer/integrations/hashicorp/amazon#iam-task-or-instance-role
+data "aws_iam_policy_document" "packer_access_policy" {
+  statement {
+    sid    = "PackerPermissions"
+    effect = "Allow"
+    actions = [
+      "ec2:AttachVolume",
+      "ec2:AuthorizeSecurityGroupIngress",
+      "ec2:CopyImage",
+      "ec2:CreateImage",
+      "ec2:CreateKeyPair",
+      "ec2:CreateSecurityGroup",
+      "ec2:CreateSnapshot",
+      "ec2:CreateTags",
+      "ec2:CreateVolume",
+      "ec2:DeleteKeyPair",
+      "ec2:DeleteSecurityGroup",
+      "ec2:DeleteSnapshot",
+      "ec2:DeleteVolume",
+      "ec2:DeregisterImage",
+      "ec2:DescribeImageAttribute",
+      "ec2:DescribeImages",
+      "ec2:DescribeInstances",
+      "ec2:DescribeInstanceStatus",
+      "ec2:DescribeRegions",
+      "ec2:DescribeSecurityGroups",
+      "ec2:DescribeSnapshots",
+      "ec2:DescribeSubnets",
+      "ec2:DescribeTags",
+      "ec2:DescribeVolumes",
+      "ec2:DetachVolume",
+      "ec2:GetPasswordData",
+      "ec2:ModifyImageAttribute",
+      "ec2:ModifyInstanceAttribute",
+      "ec2:ModifySnapshotAttribute",
+      "ec2:RegisterImage",
+      "ec2:RunInstances",
+      "ec2:StopInstances",
+      "ec2:TerminateInstances"
+    ]
+    resources = ["*"]
+  }
+}
+
+resource "aws_iam_policy" "packer_access_policy" {
+  name   = "packer-access-policy"
+  policy = data.aws_iam_policy_document.packer_access_policy.json
+}
+
+resource "aws_iam_role_policy_attachment" "packer_access_policy" {
+  role       = aws_iam_role.github_manager.name
+  policy_arn = aws_iam_policy.packer_access_policy.arn
+}
