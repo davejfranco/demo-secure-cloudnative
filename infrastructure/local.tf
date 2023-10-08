@@ -1,7 +1,10 @@
 locals {
   #General Settings
   aws_region = "us-east-1"
-  name       = "n26"
+
+  owner = data.aws_caller_identity.current.account_id
+
+  name        = "n26"
   environment = "demo"
   tags = {
     "Owner"       = "Infrastructure Team"
@@ -17,5 +20,7 @@ locals {
 
   #EKS
   cluster_version = "1.27"
+
+
 }
 

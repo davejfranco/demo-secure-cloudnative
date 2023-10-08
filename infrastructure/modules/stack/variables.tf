@@ -137,7 +137,7 @@ variable "ecs_ami_id" {
 variable "create_key_pair" {
   type        = bool
   description = "Create a key pair for SSH access"
-  default     = true
+  default     = false
 }
 
 #Database
