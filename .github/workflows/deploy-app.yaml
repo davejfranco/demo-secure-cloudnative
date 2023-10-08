@@ -15,10 +15,13 @@ on:
         description: 'ECR registry repo name'
         required: true
         default: 'n26-app'
-      default:
-        type: boolean
+      deploy:
+        type: choice
         description: 'wether to deploy the default image or not'
         required: true
+        options:
+          - demo
+          - app
         default: true
       region:
         description: 'Region to deploy'
@@ -61,7 +64,7 @@ jobs:
         working-directory: app/
 
       - name: Deploy default image to ECS
-        if: ${{ github.event.inputs.default == 'true' }}
+        if: ${{ github.event.inputs.deploy == 'demo' }}
         run: |
           TASK_DEFINITION=$(aws ecs describe-task-definition --task-definition "$SERVICE_NAME" --region "$AWS_DEFAULT_REGION")
 
@@ -79,7 +82,7 @@ jobs:
           FULL_IMAGE:  nginx:alpine-slim 
       
       - name: Deploy to ECS
-        if: ${{ github.event.inputs.default == 'false' }}
+        if: ${{ github.event.inputs.deploy == 'app' }}
         run: |
           TASK_DEFINITION=$(aws ecs describe-task-definition --task-definition "$SERVICE_NAME" --region "$AWS_DEFAULT_REGION")
 
