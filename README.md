@@ -37,7 +37,7 @@ This infrastructure is composed of the following components:
   
     KMS section is also part of the stack module.
   
-      - [KMS](./infrastructure/modules/stack/kms.tf)
+    - [KMS](./infrastructure/modules/stack/kms.tf)
 
 - By Default all EBS created are encrypted using the default KMS key.
 
