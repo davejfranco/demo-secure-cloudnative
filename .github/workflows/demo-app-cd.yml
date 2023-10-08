@@ -1,0 +1,46 @@
+# Github action workflow to deploy the infrastructure
+# this workflow is deploy manually from the github actions tab
+---
+name: App Deploy
+on:
+  workflow_dispatch:
+    inputs:
+      app-repo:
+        description: 'ECR registry repo name'
+        required: true
+        default: 'n26-app'
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  APP_REPO: ${{ github.event.inputs.app-repo }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1 # More information on this action can be found below in the 'AWS Credentials' section
+        with:
+          role-session-name: ${{ github.sha }}
+          role-to-assume: '${{ secrets.GHA_IAM_ROLE }}'
+          aws-region: ${{ github.event.inputs.region }}
+      
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build, tag, and push docker image to Amazon ECR
+        run: |
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: ${{ env.APP_REPO }}
+          IMAGE_TAG: ${{ github.sha }}
+        working-directory: app/

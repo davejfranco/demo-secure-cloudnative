@@ -1,0 +1,55 @@
+# Github action workflow to deploy the infrastructure
+# this workflow is deploy manually from the github actions tab
+---
+name: ECS Custom AMI Build with agent
+on:
+  workflow_dispatch:
+    inputs:
+      ami-name:
+        description: 'Name of the custom AMI'
+        required: true
+        default: 'amazon-ecs-custom-ami'
+      subnet-id:
+        description: 'Subnet ID to deploy'
+        required: true
+      region:
+        description: 'Region to deploy'
+        required: true
+        default: 'us-east-1'
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      
+      - name: Install Packer
+        run: |
+          wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+          echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+          sudo apt update && sudo apt install packer
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1 # More information on this action can be found below in the 'AWS Credentials' section
+        with:
+          role-session-name: ${{ github.sha }}
+          role-to-assume: '${{ secrets.GHA_IAM_ROLE }}'
+          aws-region: ${{ github.event.inputs.region }}
+      
+      - name: Packer init
+        run: |
+          packer init eks-node-custom-ami.pkr.hcl
+        working-directory: customAMI/
+
+      - name: Packer build
+        run: |
+          packer build \
+            -var "ami_name=${{ github.event.inputs.ami-name }}" \
+            -var "subnet_id=${{ github.event.inputs.subnet-id }}" \  
+            ecs-node-custom-ami.pkr.hcl
+        working-directory: customAMI/
